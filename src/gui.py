@@ -39,7 +39,7 @@ class Window:
         self.book_available = ttk.Label(self.root, text="Available: ")
         self.bavail_entry = tk.Entry(self.root)
         
-        self.book_submit = tk.Button(self.root, text="Submit")
+        self.book_submit = tk.Button(self.root, text="Submit", command=self.submit)
 
         self.book_name.place(x=15, y=130)
         self.bname_entry.place(x=35, y=155)
