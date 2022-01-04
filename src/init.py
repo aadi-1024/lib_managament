@@ -40,4 +40,3 @@ class login:
     def close(self):
         print("DBG: close called")
         self.root.quit()
-1+1
