@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk #To provide better integrated widgets
 from tkinter import messagebox
-
+import mysql.connector
 #IGNORE ALL PRINT FUNCTIONS THEY ARE FOR DEBUGGING PURPOSES ONLY
 
 class Window:
-    def __init__(self): #initialiser
+    def __init__(self, con): #initialiser
+        self.cursor = con.cursor() #Sole non-gui attr of class
+
         self.root = tk.Tk() #Root window
         print(f"DBG: Window initialised: {self}")
         self.root.title("SQL")

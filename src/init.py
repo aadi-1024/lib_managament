@@ -27,14 +27,17 @@ class login:
     def check(self):
         print(f"DBG: check() called")
         try:
-            connector = mysql.connector(host="127.0.0.1", user=self.uname_enter.get(), password=self.passw_enter.get())
+            connector = mysql.connector.connect(host="127.0.0.1", user=self.uname_enter.get(), password=self.passw_enter.get())
             self.root.quit()
             return connector
             #IF SUCCESSFUL WILL RETURN 
         except:
+            print(f"DBG: Value from uname_enter: {self.uname_enter.get()}, passw_enter: {self.passw_enter.get()}")
             messagebox.showerror("Fatal", "Error. Either invalid creds, or MySQL daemon not running")
             self.root.quit()
             raise ValueError
             #IF UNSUCCESSFUL ERROR WILL BE RAISED
-
-h = login()
+    def close(self):
+        print("DBG: close called")
+        self.root.quit()
+1+1
