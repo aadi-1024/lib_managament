@@ -4,10 +4,14 @@ from tkinter import messagebox
 import mysql.connector
 #IGNORE ALL PRINT FUNCTIONS THEY ARE FOR DEBUGGING PURPOSES ONLY
 
+#JUST FOR TESTING PURPOSES
+conc = mysql.connector.connect(host="127.0.0.1", user="aaditya", password="evangelion")
+
 class Window:
     #TODO: fix button commands to accept functions with args
     def __init__(self, con): #initialiser
-        self.cursor = con.cursor() #Sole non-gui attr of class
+        self.cursor = con.cursor() 
+        self.con = con
 
         self.root = tk.Tk() #Root window
         print(f"DBG: Window initialised: {self} with arg: {con}")
@@ -82,19 +86,20 @@ class Window:
 
         #TODO: Integrate query with DB and return result using
         #tk.messagebox
+        #DONE
         self.cursor.execute(f"SELECT * FROM {table} WHERE name = \"{self.lookupEntry.get()}\"")
         temp = self.cursor.fetchone()
         print(f"DBG: temp = {temp}")
         try:
-            msg = f"Name: {temp[0]}, Code: {temp[1]}, Author: {temp[2]}, Available: {temp[3]}"
+            msg = f" Name: {temp[0]}\n Code: {temp[1]}\n Author: {temp[2]}\n Available: {bool(temp[3])}\n"
         except:
             msg = "Not found"
         messagebox.showinfo("Search", msg)
 
-    def submit(self):
+    def submit(self, table="test"):
         #Supposed to verify input fields and create a new entry
         #in the database
-        print("DBG: submit called")
+        print(f"DBG: submit called with args tavle: {table}")
 
         name = self.bname_entry.get()
         code = self.bcode_entry.get()
@@ -104,3 +109,31 @@ class Window:
         print(f"DBG: Value returned from self.bname_entry: {name}, self.bcode_entry: {code}, self.bauthor_entry: {author}, self.bavail_entry: {available}")
 
         #TODO: Make it verify and submit the entries
+        #DONE
+        try:
+            int(code)
+        except:
+            print("DBG: Invalid values entered in self.bcode_entry")
+            messagebox.showwarning("Incorrect Values", "Please enter correct values in the code box")
+            return 0
+        try:
+            bool(available)
+        except:
+            print("DBG: Invalid values entered in self.bavail_entry")
+            messagebox.showwarning("Incorrect Values", "Please enter correct values in the available box(0/1)")
+            return 0
+        if name.isspace() or author.isspace():
+            print("DBG: Boxes cannot be empty")
+            messagebox.showwarning("Incorrect Values", "Please enter correct values in the boxes")
+            return 0
+        else:
+            try:
+                s = f"INSERT INTO {table} VALUES (\"{name}\", {code}, \"{author}\", {available})" 
+                self.cursor.execute(s)
+                self.con.commit()
+                messagebox.showinfo("Successful", "Row Successfully added into the table")
+            except:
+                print("DBG: Couldn't add row to DB")
+                messagebox.showerror("Error", "Couldn't insert row into the database")
+                return 0
+w = Window(conc) #TESTING ONLY
