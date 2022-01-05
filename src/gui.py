@@ -24,7 +24,7 @@ class Window:
         #Supposed to create the widgets and pack them
         print(f"DBG: Setup called")
         #Element query -->
-        self.label1 = ttk.Label(self.root, text="Lookup Entry")
+        self.label1 = ttk.Label(self.root, text="Lookup Entry:")
         self.label1.place(x=75, y=5)
         self.lookupEntry = tk.Entry(self.root)
         self.lookupEntry.place(x=35, y=25)
@@ -57,6 +57,11 @@ class Window:
         self.book_available.place(x=15, y=280)
         self.bavail_entry.place(x=35, y=305)
         self.book_submit.place(x=70, y=335)
+        #DB stats -->
+        self.stat_label = ttk.Label(self.root, text="Show Status:")
+        self.stat_but = tk.Button(self.root, text="Show", command=self.stats)
+        self.stat_label.place(x=55, y=380)
+        self.stat_but.place(x=70, y=405)
         self.setup_db("test")
 
     def setup_db(self, table):
@@ -136,4 +141,22 @@ class Window:
                 print("DBG: Couldn't add row to DB")
                 messagebox.showerror("Error", "Couldn't insert row into the database")
                 return 0
+
+    def stats(self, table="test"):
+        print(f"DBG: stats called with args table: {table}")
+        try:
+            self.cursor.execute(f"SELECT * FROM {table}")
+            temp = self.cursor.fetchall()
+            #Counting available books
+            available_books = 0
+            for i in temp:
+                if i[3] == 1:
+                    available_books += 1
+
+            messagebox.showinfo("Status", f"No. of books: {len(temp)}\nBooks Available: {available_books}")
+        except:
+            print("DBG: Error while trying to communicate with server")
+            messagebox.showerror("Error", "Couldnt communicate with the server")
+            return 0
+
 w = Window(conc) #TESTING ONLY
