@@ -4,9 +4,6 @@ from tkinter import messagebox
 import mysql.connector
 #IGNORE ALL PRINT FUNCTIONS THEY ARE FOR DEBUGGING PURPOSES ONLY
 
-#JUST FOR TESTING PURPOSES
-conc = mysql.connector.connect(host="127.0.0.1", user="aaditya", password="evangelion")
-
 class Window:
     #TODO: fix button commands to accept functions with args
     def __init__(self, con): #initialiser
@@ -158,5 +155,3 @@ class Window:
             print("DBG: Error while trying to communicate with server")
             messagebox.showerror("Error", "Couldnt communicate with the server")
             return 0
-
-w = Window(conc) #TESTING ONLY
