@@ -6,10 +6,14 @@ import mysql.connector
 
 class Window:
     #TODO: fix button commands to accept functions with args
-    def __init__(self, con): #initialiser
-        self.cursor = con.cursor() 
+    #DONE, I think
+    def __init__(self, con, database, table): #initialiser
+        self.cursor = con.cursor() #SQL stuff
         self.con = con
+        self.database = database
+        self.table = table
 
+        #Front end stuff -->
         self.root = tk.Tk() #Root window
         print(f"DBG: Window initialised: {self} with arg: {con}")
         self.root.title("SQL")
@@ -59,26 +63,26 @@ class Window:
         self.stat_but = tk.Button(self.root, text="Show", command=self.stats)
         self.stat_label.place(x=55, y=380)
         self.stat_but.place(x=70, y=405)
-        self.setup_db("test")
+        self.setup_db()
 
-    def setup_db(self, table):
-        print(f"DBG: Setup DB called with args: {table}")
+    def setup_db(self):
+        print(f"DBG: Setup DB called with args: {self.table}")
         try:
-            self.cursor.execute("USE library")
+            self.cursor.execute(f"USE {self.database}")
         except:
             print("DBG: Required DB does not exist")
             messagebox.showerror("Fatal", "Required Database does not exist")
             self.root.quit()
 
         self.cursor.execute("SHOW TABLES")
-        if table in self.cursor.fetchone():
-            print("DBG: Found table test")
+        if self.table in self.cursor.fetchone():
+            print(f"DBG: Found table {self.table}")
         else:
-            messagebox.showerror("Fatal", f"Couldnt find table {table}")
+            messagebox.showerror("Fatal", f"Couldnt find table {self.table}")
             self.root.quit()
 
-    def query(self, table="test"): #default only temporary till TODO:8 is done
-
+    def query(self): #default only temporary till TODO:8 is done
+        #DONE more or less
         print("DBG: query called")
         #Supposed to read input from self.lookupEntry and
         #query the database
@@ -89,7 +93,7 @@ class Window:
         #TODO: Integrate query with DB and return result using
         #tk.messagebox
         #DONE
-        self.cursor.execute(f"SELECT * FROM {table} WHERE name = \"{self.lookupEntry.get()}\"")
+        self.cursor.execute(f"SELECT * FROM {self.table} WHERE name = \"{self.lookupEntry.get()}\"")
         temp = self.cursor.fetchone()
         print(f"DBG: temp = {temp}")
         try:
@@ -139,10 +143,10 @@ class Window:
                 messagebox.showerror("Error", "Couldn't insert row into the database")
                 return 0
 
-    def stats(self, table="test"):
-        print(f"DBG: stats called with args table: {table}")
+    def stats(self):
+        print(f"DBG: stats called with args table: {self.table}")
         try:
-            self.cursor.execute(f"SELECT * FROM {table}")
+            self.cursor.execute(f"SELECT * FROM {self.table}")
             temp = self.cursor.fetchall()
             #Counting available books
             available_books = 0
