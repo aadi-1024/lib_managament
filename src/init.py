@@ -3,16 +3,17 @@ import mysql.connector
 from tkinter import messagebox
 
 #The initial login window responsible for getting credentials as well as
-#instantiating the DB
+#instantiating the DB connection
 
 class login:
     def __init__(self):
         print(f"Window initialised: {self}")
         self.root = tk.Tk()
-        self.root.geometry("250x270")
+        self.root.geometry("340x450")
         self.root.resizable = False
         self.root.title("Enter Creds")
-
+        self.return_vals = [] #trying a solution for the error around #50
+		
         self.uname = tk.Label(self.root, text="Username:")
         self.passw = tk.Label(self.root, text="Password:")
         self.uname_enter = tk.Entry(self.root)
@@ -23,24 +24,24 @@ class login:
         self.table = tk.Label(self.root, text="Table:")
         self.table_enter = tk.Entry(self.root)
 
-        self.uname.place(x=15, y=25)
-        self.uname_enter.place(x=35, y=50)
-        self.passw.place(x=15, y=75)
-        self.passw_enter.place(x=35, y=100)
-        self.db.place(x=15, y=125)
-        self.db_enter.place(x=35, y=150)
-        self.table.place(x=15, y=175)
-        self.table_enter.place(x=35, y=200)
-        self.submit.place(x=70, y=225)
+        self.uname.grid(pady=10, padx=10)
+        self.uname_enter.grid(pady=10, padx=35)
+        self.passw.grid(pady=10, padx=10)
+        self.passw_enter.grid(pady=10, padx=35)
+        self.db.grid(pady=10, padx=10)
+        self.db_enter.grid(pady=10, padx=35)
+        self.table.grid(pady=10, padx=10)
+        self.table_enter.grid(pady=10, padx=35)
+        self.submit.grid(pady=10, padx=40)
         self.root.mainloop()
 
     def check(self):
         print(f"DBG: check() called")
         try:
             connector = mysql.connector.connect(host="127.0.0.1", user=self.uname_enter.get(), password=self.passw_enter.get())
+            self.return_vals = [connector, self.db_enter.get(), self.table_enter.get()]
             self.root.quit()
-            return [connector, self.db_enter.get(), self.table_enter.get()]
-            #IF SUCCESSFUL WILL RETURN 
+            #IF SUCCESSFUL WILL SET
         except:
             print(f"DBG: Value from uname_enter: {self.uname_enter.get()}, passw_enter: HIDDEN FROM RELEASE VER, db_enter: {self.db_enter.get()}, table_enter: {self.table_enter.get()}")
             messagebox.showerror("Fatal", "Error. Either invalid creds, or MySQL daemon not running")
